@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkAnswer(true);
-                mIsButtonsEnable = false;
             }
         });
 
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkAnswer(false);
-                mIsButtonsEnable = false;
             }
         });
 
@@ -80,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Start CheatActivity
-                Intent intent = new Intent(MainActivity.this,CheatActivity.class);
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+                Intent intent = CheatActivity.newIntent(MainActivity.this,answerIsTrue);
                 startActivity(intent);
             }
         });
