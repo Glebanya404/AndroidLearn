@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShonw(data);
+            Log.d(TAG,"Cheat: " + mIsCheater);
         }
     }
 }
