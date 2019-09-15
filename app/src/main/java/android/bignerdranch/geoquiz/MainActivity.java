@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
     private static final String KEY_BUTTON = "button";
+    private static final String KEY_CHEATER = "cheater";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null){
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX,0);
             mIsButtonsEnable = savedInstanceState.getBoolean(KEY_BUTTON);
+            mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER);
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateQuestion(){
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
+        mIsCheater = mQuestionBank[mCurrentIndex].isWasCheat();
         mFalseButton.setEnabled(mIsButtonsEnable);
         mTrueButton.setEnabled(mIsButtonsEnable);
     }
@@ -152,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "Leave ");
         savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
         savedInstanceState.putBoolean(KEY_BUTTON,mIsButtonsEnable);
+        savedInstanceState.putBoolean(KEY_CHEATER,mIsCheater);
 
     }
 
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShonw(data);
-            Log.d(TAG,"Cheat: " + mIsCheater);
+            mQuestionBank[mCurrentIndex].setWasCheat(mIsCheater);
         }
     }
 }
