@@ -2,6 +2,7 @@ package android.bignerdranch.geoquiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
     private static final String KEY_BUTTON = "button";
+    private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
             new Question(R.string.question_asia, true),
     };
     private int mCurrentIndex = 0;
+    private boolean mIsCheater;
     private boolean mIsButtonsEnable = true;
 
     @Override
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 mIsButtonsEnable = true;
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 //Start CheatActivity
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent intent = CheatActivity.newIntent(MainActivity.this,answerIsTrue);
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE_CHEAT);
             }
         });
 
@@ -100,12 +104,14 @@ public class MainActivity extends AppCompatActivity {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
         int messageResId = 0;
-
-        if(userPressedTrue == answerIsTrue){
-            messageResId = R.string.correct_toast;
-        } else {
-            messageResId = R.string.incorrect_toast;
+        if(mIsCheater){
+            if(userPressedTrue == answerIsTrue){
+                messageResId = R.string.correct_toast;
+            } else {
+                messageResId = R.string.incorrect_toast;
+            }
         }
+
         mIsButtonsEnable = false;
         mFalseButton.setEnabled(false);
         mTrueButton.setEnabled(false);
@@ -147,4 +153,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (resultCode != Activity.RESULT_OK){
+            return;
+        }
+        if(requestCode == REQUEST_CODE_CHEAT){
+            if (data == null)
+            {
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShonw(data);
+        }
+    }
 }
