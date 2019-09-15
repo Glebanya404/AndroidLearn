@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             new Question(R.string.question_asia, true),
     };
     private int mCurrentIndex = 0;
-    private boolean mIsCheater;
+    private boolean mIsCheater = false;
     private boolean mIsButtonsEnable = true;
 
     @Override
@@ -100,11 +100,13 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton.setEnabled(mIsButtonsEnable);
     }
 
-    private void checkAnswer(boolean userPressedTrue){
+    private void checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
-        int messageResId = 0;
-        if(mIsCheater){
+        int messageResId;
+        if (mIsCheater){
+            messageResId = R.string.judgment_toast;
+        }else{
             if(userPressedTrue == answerIsTrue){
                 messageResId = R.string.correct_toast;
             } else {
