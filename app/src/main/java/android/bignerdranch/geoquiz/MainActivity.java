@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INDEX = "index";
     private static final String KEY_BUTTON = "button";
     private static final String KEY_CHEATER = "cheater";
+    private static final String KEY_REMAIN = "remain";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
             new Question(R.string.question_asia, true),
     };
     private int mCurrentIndex = 0;
+    private int mCountRemainingCheat = 3;
     private boolean mIsCheater = false;
     private boolean mIsButtonsEnable = true;
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX,0);
             mIsButtonsEnable = savedInstanceState.getBoolean(KEY_BUTTON);
             mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER);
+            mCountRemainingCheat = savedInstanceState.getInt(KEY_REMAIN);
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -85,8 +88,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Start CheatActivity
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-                Intent intent = CheatActivity.newIntent(MainActivity.this,answerIsTrue);
-                startActivityForResult(intent,REQUEST_CODE_CHEAT);
+                Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
+                startActivityForResult(intent, REQUEST_CODE_CHEAT);
+                mCountRemainingCheat--;
+                if(mCountRemainingCheat == 0) {
+                    mCheatButton.setEnabled(false);
+                }
             }
         });
 
@@ -154,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "Leave ");
         savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
+        savedInstanceState.putInt(KEY_REMAIN,mCountRemainingCheat);
         savedInstanceState.putBoolean(KEY_BUTTON,mIsButtonsEnable);
         savedInstanceState.putBoolean(KEY_CHEATER,mIsCheater);
 
